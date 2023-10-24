@@ -34,8 +34,6 @@ namespace SimpleNetworkDemo.Player
                     health.TakeDamage(damage);
                 }
             }
-            
-            GetComponent<NetworkObject>().Despawn();
         }
 
         private int CalculateDamage(Vector3 targetPosition)
