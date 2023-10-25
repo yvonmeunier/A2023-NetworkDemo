@@ -4,12 +4,16 @@ using UnityEngine;
 
 namespace SimpleNetworkDemo.Player
 {
-    public class Projectile : MonoBehaviour 
+    public class Projectile : NetworkBehaviour 
     {
         [SerializeField] private Vector2 _velocity;
 
-        private void Start()
+        public override void OnNetworkSpawn()
         {
+            if (!IsServer)
+            {
+                return;
+            }
             Invoke(nameof(DestroyItself), 5);
         }
 
@@ -21,11 +25,15 @@ namespace SimpleNetworkDemo.Player
 
         private void DestroyItself()
         {
-            Destroy(gameObject);
+            GetComponent<NetworkObject>().Despawn();
         }
         
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (!IsServer)
+            {
+                return;
+            }
             if (other.TryGetComponent<PlayerVisual>(out var visual))
             {
                 visual.ChangeColorServerRpc();

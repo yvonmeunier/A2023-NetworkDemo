@@ -1,9 +1,10 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 
 namespace SimpleNetworkDemo.Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : NetworkBehaviour
     {
         [Header("Movement")]
         [SerializeField] private Vector2 _velocity;
@@ -14,6 +15,15 @@ namespace SimpleNetworkDemo.Player
         
         private Vector2 _currentMousePosition;
         private Vector2 _movement;
+
+
+        public override void OnNetworkSpawn()
+        {
+            if (!IsOwner)
+            {
+                enabled = false;
+            }
+        }
 
         private void Update() 
         {

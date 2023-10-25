@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SimpleNetworkDemo.Player
 {
-    public class Bomb : MonoBehaviour
+    public class Bomb : NetworkBehaviour
     {
         [SerializeField] private float _explosionRadius = 4f;
         [SerializeField] private int _maxDamage = 125;
@@ -18,8 +18,12 @@ namespace SimpleNetworkDemo.Player
             Gizmos.DrawWireSphere(transform.position, _explosionRadius);
         }
 
-        public void Start()
+        public override void OnNetworkSpawn()
         {
+            if (!IsServer)
+            {
+                return;
+            }
             Invoke(nameof(Explode), 3f);
         }
 
@@ -34,6 +38,7 @@ namespace SimpleNetworkDemo.Player
                     health.TakeDamage(damage);
                 }
             }
+            GetComponent<NetworkObject>().Despawn();
         }
 
         private int CalculateDamage(Vector3 targetPosition)

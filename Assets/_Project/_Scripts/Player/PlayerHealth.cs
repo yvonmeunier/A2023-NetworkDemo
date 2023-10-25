@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SimpleNetworkDemo.Player
 {
-    public class PlayerHealth : MonoBehaviour
+    public class PlayerHealth : NetworkBehaviour
     {
         [SerializeField] private int _maxHealth = 100;
 
