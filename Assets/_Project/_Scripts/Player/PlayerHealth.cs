@@ -10,35 +10,37 @@ namespace SimpleNetworkDemo.Player
     {
         [SerializeField] private int _maxHealth = 100;
 
-        private int _currentHealth;
+        private readonly NetworkVariable<int> _currentHealth = new();
 
-        private void Start()
+        public override void OnNetworkSpawn()
         {
-            _currentHealth = _maxHealth;
+            _currentHealth.Value = _maxHealth;
         }
 
         private void OnGUI()
         {
-            int OwnerClientId = 1;
-            
             // Please do not do this
             GUI.Label(
                 new Rect(10, 100 + (OwnerClientId * 20), 100, 20), 
-                $"#{OwnerClientId} - {_currentHealth} / {_maxHealth}");
+                $"#{OwnerClientId} - {_currentHealth.Value} / {_maxHealth}");
         }
 
         public void TakeDamage(int damage)
         {
-            _currentHealth = Math.Max(0, _currentHealth - damage);
-            if (_currentHealth <= 0)
+            _currentHealth.Value = Math.Max(0, _currentHealth.Value - damage);
+            if (_currentHealth.Value <= 0)
             {
                 Die();
             }
+
+            
+
         }
+        
 
         private void Die()
         {
-            Destroy(gameObject);
+            GetComponent<NetworkObject>().Despawn();
         }
     }
 }
